@@ -1,28 +1,14 @@
 from typing import Optional, Union
-from pydantic import BaseModel
 from fastapi import Body, FastAPI, Response, status, HTTPException, Depends
 from random import randrange
 from . import models
 from .database import engine, get_db
 from sqlalchemy.orm import Session
+from . import schemas
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
-class Post(BaseModel):
-    title: str
-    content: str
-    published: bool = True
-    # rating: Optional[int] = None
-
-my_posts = [{"title":"Test1", "content": "cool", "id":1}, {"title":"Test1", "content": "cool", "id":2}]
-
-def find_post(id):
-    for i,post in enumerate(my_posts):
-        if id == post["id"]:
-            return post, i
-    return None, None
 
 @app.get("/")
 def read_root():
@@ -34,7 +20,7 @@ def read_posts(db: Session = Depends(get_db)):
     return {"posts": posts}
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_posts(payload: Post, db: Session = Depends(get_db)):
+def create_posts(payload: schemas.Post, db: Session = Depends(get_db)):
 
     post = models.Post(**payload.dict())
 
@@ -57,25 +43,28 @@ def get_post(id: int, response: Response, db: Session = Depends(get_db)):
     return {"post" : post}
 
 @app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id: int):
-    _, ind = find_post(id)
+def delete_post(id: int, db: Session = Depends(get_db)):
+    post = db.query(models.Post).filter(models.Post.id == id)
 
-    if ind == None:
+    if post.first() == None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=f"id:{id} does not exist"
         )
 
-    my_posts.pop(ind)
+    post.delete(synchronize_session=False)
+    db.commit()
 
 @app.put("/posts/{id}", status_code=status.HTTP_202_ACCEPTED)
-def update_post(id:int, payload:Post):
-    _, ind = find_post(id)
-    if _ == None:
+def update_post(id:int, payload:schemas.Post, db: Session = Depends(get_db)):
+    post_query = db.query(models.Post).filter(models.Post.id == id)
+    post = post_query.first()
+    if post == None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=f"id:{id} does not exist"
         )
-    post_dict = payload.dict()
-    post_dict["id"] = id
-    my_posts[ind] = post_dict
-    return {"detail": post_dict}
+    
+    post_query.update(payload.dict(), synchronize_session=False)
+    db.commit()
+
+    return {"detail": post_query.first()}
 

@@ -1,7 +1,12 @@
 from typing import Optional, Union
 from pydantic import BaseModel
-from fastapi import Body, FastAPI, Response, status, HTTPException
+from fastapi import Body, FastAPI, Response, status, HTTPException, Depends
 from random import randrange
+from . import models
+from .database import engine, get_db
+from sqlalchemy.orm import Session
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -9,7 +14,7 @@ class Post(BaseModel):
     title: str
     content: str
     published: bool = True
-    rating: Optional[int] = None
+    # rating: Optional[int] = None
 
 my_posts = [{"title":"Test1", "content": "cool", "id":1}, {"title":"Test1", "content": "cool", "id":2}]
 
@@ -24,19 +29,24 @@ def read_root():
     return {"Hello": "World"}
 
 @app.get("/posts")
-def read_posts():
-    return {"posts": my_posts}
+def read_posts(db: Session = Depends(get_db)):
+    posts = db.query(models.Post).all()
+    return {"posts": posts}
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_posts(payload: Post):
-    post_dict = payload.dict()
-    post_dict["id"] = randrange(0, 100000000)
-    my_posts.append(post_dict)
-    return {"post":post_dict}
+def create_posts(payload: Post, db: Session = Depends(get_db)):
+
+    post = models.Post(**payload.dict())
+
+    db.add(post)
+    db.commit()
+    db.refresh(post)
+    
+    return {"post":post}
 
 @app.get("/posts/{id}")
-def get_post(id: int, response: Response):
-    post, _ = find_post(id)
+def get_post(id: int, response: Response, db: Session = Depends(get_db)):
+    post = db.query(models.Post).filter(models.Post.id == id).first()
 
     if not post:
         # response.status_code = status.HTTP_404_NOT_FOUND
@@ -68,3 +78,4 @@ def update_post(id:int, payload:Post):
     post_dict["id"] = id
     my_posts[ind] = post_dict
     return {"detail": post_dict}
+

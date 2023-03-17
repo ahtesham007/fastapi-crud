@@ -54,3 +54,4 @@ venv*/
 .python-version
 *.mp4
 app/database.py
+.env

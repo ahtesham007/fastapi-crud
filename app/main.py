@@ -4,9 +4,11 @@ from random import randrange
 from . import models
 from .database import engine, get_db
 from sqlalchemy.orm import Session
-from . import schemas
+from . import schemas, utils
+
 
 models.Base.metadata.create_all(bind=engine)
+
 
 app = FastAPI()
 
@@ -68,3 +70,15 @@ def update_post(id:int, payload:schemas.Post, db: Session = Depends(get_db)):
 
     return post_query.first()
 
+
+@app.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
+def create_user(payload: schemas.UserCreate, db: Session = Depends(get_db)):
+    
+    payload.password = utils.hash(payload.password)
+    user = models.User(**payload.dict())
+
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    
+    return user

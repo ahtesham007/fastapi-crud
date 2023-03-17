@@ -11,4 +11,5 @@ class Post(Base):
     title = Column(String(50), nullable=False)
     content = Column(String(100), nullable=False)
     published = Column(Boolean, server_default='0', nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
+    created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False, server_default=text('now()'))

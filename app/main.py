@@ -77,8 +77,13 @@ def create_user(payload: schemas.UserCreate, db: Session = Depends(get_db)):
     payload.password = utils.hash(payload.password)
     user = models.User(**payload.dict())
 
-    db.add(user)
-    db.commit()
-    db.refresh(user)
+    try:
+        db.add(user)
+        db.commit()
+        db.refresh(user)
     
-    return user
+        return user
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=f"This email id : {payload.email} is already exists"
+        )

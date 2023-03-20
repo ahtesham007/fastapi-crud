@@ -55,3 +55,4 @@ venv*/
 *.mp4
 app/database.py
 .env
+*docker*

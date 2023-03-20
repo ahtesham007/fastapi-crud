@@ -22,7 +22,7 @@ def create_user(payload: schemas.UserCreate, db: Session = Depends(get_db)):
         return user
     except Exception as e:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail=f"This email id : {payload.email} is already exists"
+            status_code=status.HTTP_400_BAD_REQUEST, detail=f"This email id : {payload.email} is already exists {e}"
         )
 
 @router.get("/{id}", response_model=schemas.UserOut)

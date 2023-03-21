@@ -18,17 +18,18 @@ jobs:
       ROOT_DB_PASSWORD: ${{secrets.ROOT_DB_PASSWORD}}
 
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: ${{secrets.ROOT_DB_PASSWORD}}
-          MYSQL_DATABASE: ${{secrets.DATABASE_NAME}}_test
-          MYSQL_USER: ${{secrets.DATABASE_USERNAME}}
-          MYSQL_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
-        ports:
-          - 3306/tcp
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    # services:
+    #   mysql:
+    #     image: mysql
+    #     env:
+    #       MYSQL_ROOT_PASSWORD: ${{secrets.ROOT_DB_PASSWORD}}
+    #       MYSQL_DATABASE: ${{secrets.DATABASE_NAME}}_test
+    #       MYSQL_USER: ${{secrets.DATABASE_USERNAME}}
+    #       MYSQL_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+    #     ports:
+    #       - 3306/tcp
+    #     options: 
+    #       --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - name: pulling git repo
@@ -51,19 +52,17 @@ jobs:
       #     python -c "import mysql.connector;conn=mysql.connector.connect(user=${{secrets.DATABASE_USERNAME}}, password=${{secrets.DATABASE_PASSWORD}}, host='localhost', database=${{secrets.DATABASE_NAME}}_test);print(conn)"
       
 
-      # - name: start mysql
-      #   run: sudo service mysql start
+      - name: start mysql
+        run: sudo service mysql start
 
-      # - name: check mysql status
-      #   run: sudo service mysql status
+      - name: check mysql status
+        run: sudo service mysql status
+      
+      - name: Create new user & test DB
+        run: |
+          mysql -u root -proot -e "CREATE USER ${{secrets.DATABASE_USERNAME}}@'localhost' IDENTIFIED BY ${{secrets.DATABASE_PASSWORD}}; GRANT ALL PRIVILEGES ON *.* TO ${{secrets.DATABASE_USERNAME}}@'localhost'; FLUSH PRIVILEGES;"
+          mysql -e 'CREATE DATABASE ${{secrets.DATABASE_NAME}}_test;' -u${{secrets.DATABASE_USERNAME}} -p${{secrets.DATABASE_PASSWORD}}
 
-      # - name: Set up MySQL
-      #   uses: mirromutth/mysql-action@v1.1
-      #   with:
-      #     mysql database: ${{secrets.DATABASE_NAME}}_test
-      #     mysql root password: ${{secrets.ROOT_DB_PASSWORD}}
-      #     mysql user: ${{secrets.DATABASE_USERNAME}}
-      #     mysql password: ${{secrets.DATABASE_PASSWORD}}
 
       - name: test with pytest
         run: |

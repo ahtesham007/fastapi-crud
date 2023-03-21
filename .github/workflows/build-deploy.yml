@@ -31,7 +31,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: check mysql status
-        run: sudo systemctl status mysql.service
+        run: sudo service mysql status
 
       # - name: Set up MySQL
       #   uses: mirromutth/mysql-action@v1.1

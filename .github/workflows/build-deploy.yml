@@ -26,6 +26,7 @@ jobs:
           MYSQL_DATABASE: ${{secrets.DATABASE_NAME}}_test
           MYSQL_USER: ${{secrets.DATABASE_USERNAME}}
           MYSQL_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+          MYSQL_HOST: ${{secrets.DATABASE_HOSTNAME}}
         ports:
           - 3306:3306
         options: 

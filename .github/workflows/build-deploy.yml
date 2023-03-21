@@ -60,7 +60,7 @@ jobs:
       
       - name: Create new user & test DB
         run: |
-          mysql -u root -proot -e "CREATE USER ${{secrets.DATABASE_USERNAME}}@'localhost' IDENTIFIED BY ${{secrets.DATABASE_PASSWORD}}; GRANT ALL PRIVILEGES ON *.* TO ${{secrets.DATABASE_USERNAME}}@'localhost'; FLUSH PRIVILEGES;"
+          mysql -u root -proot -e "CREATE USER '${{secrets.DATABASE_USERNAME}}'@'localhost' IDENTIFIED BY '${{secrets.DATABASE_PASSWORD}}'; GRANT ALL PRIVILEGES ON *.* TO '${{secrets.DATABASE_USERNAME}}'@'localhost'; FLUSH PRIVILEGES;"
           mysql -e 'CREATE DATABASE ${{secrets.DATABASE_NAME}}_test;' -u${{secrets.DATABASE_USERNAME}} -p${{secrets.DATABASE_PASSWORD}}
 
 

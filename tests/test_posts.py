@@ -62,6 +62,7 @@ def test_create_post_default_published_true(authorized_client, test_user, test_p
     assert res.status_code == 201
     assert created_post.title == "arbitrary title"
     assert created_post.content == "aasdfjasdf"
+    print(created_post.published)
     assert created_post.published == True
     assert created_post.owner_id == test_user['id']
 

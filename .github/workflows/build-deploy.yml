@@ -20,7 +20,7 @@ jobs:
     services:
       postgres:
         image: mysql
-        environment:
+        env:
         - MYSQL_ROOT_PASSWORD=${{secrets.ROOT_DB_PASSWORD}}
         - MYSQL_DATABASE=${{secrets.DATABASE_NAME}}_test
         - MYSQL_USER=${{secrets.DATABASE_USERNAME}}

@@ -13,7 +13,8 @@ from alembic import command
 from app.oauth2 import create_access_token
 
 user = settings.user
-encoded_pwd = quote_plus(settings.pwd)
+# encoded_pwd = quote_plus(settings.pwd)
+encoded_pwd = settings.pwd
 host = settings.host
 port = settings.port
 db = settings.db

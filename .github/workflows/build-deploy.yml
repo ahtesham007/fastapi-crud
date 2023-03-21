@@ -55,7 +55,7 @@ jobs:
 
       - name: Test connection to MySQL
         run: |
-          python -c "import mysql.connector;conn=mysql.connector.connect(user='${{secrets.DATABASE_USERNAME}}', password='${{secrets.DATABASE_PASSWORD}}', host='localhost', database='fastapi_test');print(conn)"
+          python -c "import mysql.connector;conn=mysql.connector.connect(user='${{secrets.DATABASE_USERNAME}}', password='${{secrets.DATABASE_PASSWORD}}', host='localhost', database='${{secrets.DATABASE_NAME}}_test');print(conn)"
 
       - name: test with pytest
         run: |

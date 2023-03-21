@@ -3,11 +3,11 @@ name: Build and Deploy Code
 on: [push, pull_request]
 
 jobs:
-  build:
+  test-container:
     environment:
       name: testing
     env:
-      HOST: mysqldb
+      HOST: mydb
       PORT: ${{secrets.DATABASE_PORT}}
       PWD: ${{secrets.DATABASE_PASSWORD}}
       DB: ${{secrets.DATABASE_NAME}}
@@ -18,8 +18,9 @@ jobs:
       ROOT_DB_PASSWORD: ${{secrets.ROOT_DB_PASSWORD}}
 
     runs-on: ubuntu-latest
+    container: ubuntu
     services:
-      mysqldb:
+      mydb:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: ${{secrets.ROOT_DB_PASSWORD}}

@@ -17,15 +17,6 @@ jobs:
       ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.ACCESS_TOKEN_EXPIRE_MINUTES}}
       ROOT_DB_PASSWORD: ${{secrets.ROOT_DB_PASSWORD}}
 
-    services:
-      postgres:
-        image: mysql
-        env:
-        - MYSQL_ROOT_PASSWORD=${{secrets.ROOT_DB_PASSWORD}}
-        - MYSQL_DATABASE=${{secrets.DATABASE_NAME}}_test
-        - MYSQL_USER=${{secrets.DATABASE_USERNAME}}
-        - MYSQL_PASSWORD=${{secrets.DATABASE_PASSWORD}}
-
     runs-on: ubuntu-latest
     steps:
       - name: pulling git repo
@@ -38,6 +29,18 @@ jobs:
         run: python -m pip install --upgrade pip
       - name: install all dependencies
         run: pip install -r requirements.txt
+
+      - name: Set up MySQL
+        uses: mysql-actions/setup-mysql@v1
+        with:
+          mysql-version: '8.0'
+          root-password: ${{secrets.ROOT_DB_PASSWORD}}
+          user: ${{secrets.DATABASE_USERNAME}}
+          password: ${{secrets.DATABASE_PASSWORD}}
+        
+      - name: Create Database
+        run: |
+          mysql -u ${{secrets.DATABASE_USERNAME}} -p${{secrets.DATABASE_PASSWORD}} -e 'CREATE DATABASE ${{secrets.DATABASE_NAME}}_test'
       - name: test with pytest
         run: |
           pip install pytest

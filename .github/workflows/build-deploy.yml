@@ -30,17 +30,17 @@ jobs:
       - name: install all dependencies
         run: pip install -r requirements.txt
 
+      - name: check installed mysql
+        run: sudo service mysql stop
+
       - name: Set up MySQL
-        uses: shogo82148/actions-setup-mysql@v1
+        uses: mirromutth/mysql-action@v1.1
         with:
-          mysql-version: '8.0'
-          root-password: ${{secrets.ROOT_DB_PASSWORD}}
-          user: ${{secrets.DATABASE_USERNAME}}
-          password: ${{secrets.DATABASE_PASSWORD}}
-        
-      - name: Create Database
-        run: |
-          mysql -u ${{secrets.DATABASE_USERNAME}} -p${{secrets.DATABASE_PASSWORD}} -e 'CREATE DATABASE ${{secrets.DATABASE_NAME}}_test'
+          mysql database: ${{secrets.DATABASE_NAME}}_test
+          mysql root password: ${{secrets.ROOT_DB_PASSWORD}}
+          mysql user: ${{secrets.DATABASE_USERNAME}}
+          mysql password: ${{secrets.DATABASE_PASSWORD}}
+
       - name: test with pytest
         run: |
           pip install pytest

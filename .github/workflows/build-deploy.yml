@@ -30,16 +30,16 @@ jobs:
       - name: install all dependencies
         run: pip install -r requirements.txt
 
-      - name: check installed mysql
-        run: sudo service mysql stop
+      - name: check mysql status
+        run: sudo systemctl status mysql.service
 
-      - name: Set up MySQL
-        uses: mirromutth/mysql-action@v1.1
-        with:
-          mysql database: ${{secrets.DATABASE_NAME}}_test
-          mysql root password: ${{secrets.ROOT_DB_PASSWORD}}
-          mysql user: ${{secrets.DATABASE_USERNAME}}
-          mysql password: ${{secrets.DATABASE_PASSWORD}}
+      # - name: Set up MySQL
+      #   uses: mirromutth/mysql-action@v1.1
+      #   with:
+      #     mysql database: ${{secrets.DATABASE_NAME}}_test
+      #     mysql root password: ${{secrets.ROOT_DB_PASSWORD}}
+      #     mysql user: ${{secrets.DATABASE_USERNAME}}
+      #     mysql password: ${{secrets.DATABASE_PASSWORD}}
 
       - name: test with pytest
         run: |

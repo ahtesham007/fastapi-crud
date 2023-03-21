@@ -7,7 +7,7 @@ jobs:
     environment:
       name: testing
     env:
-      HOST: mydb
+      HOST: 127.0.0.1
       PORT: ${{secrets.DATABASE_PORT}}
       PWD: ${{secrets.DATABASE_PASSWORD}}
       DB: ${{secrets.DATABASE_NAME}}
@@ -40,7 +40,7 @@ jobs:
       - name: update pip
         run: python -m pip install --upgrade pip
       - name: install all dependencies
-        run: pip3 install -r requirements.txt
+        run: pip install -r requirements.txt
       
       # - name: start mysql
       #   run: sudo service mysql start
@@ -54,11 +54,11 @@ jobs:
 
       #     mysql -e 'CREATE DATABASE ${{secrets.DATABASE_NAME}}_test; show databases;' -u${{secrets.DATABASE_USERNAME}} -p${{secrets.DATABASE_PASSWORD}}
 
-      # - name: Test connection to MySQL
-      #   run: |
-      #     python -c "import mysql.connector;
-      #     conn=mysql.connector.connect(user='${{secrets.DATABASE_USERNAME}}', password='${{secrets.DATABASE_PASSWORD}}', host=mysqldb, database='${{secrets.DATABASE_NAME}}_test');
-      #     mycursor = conn.cursor(); mycursor.execute('SHOW TABLES');myresult = mycursor.fetchall();print(myresult)"
+      - name: Test connection to MySQL
+        run: |
+          python -c "import mysql.connector;
+          conn=mysql.connector.connect(user='${{secrets.DATABASE_USERNAME}}', password='${{secrets.DATABASE_PASSWORD}}', host='127.0.0.1', database='${{secrets.DATABASE_NAME}}_test');
+          mycursor = conn.cursor(); mycursor.execute('SHOW TABLES');myresult = mycursor.fetchall();print(myresult)"
 
       - name: test with pytest
         run: |

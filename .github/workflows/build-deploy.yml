@@ -32,7 +32,7 @@ jobs:
 
       - name: start mysql
         run: sudo service mysql start
-        
+
       - name: check mysql status
         run: sudo service mysql status
 

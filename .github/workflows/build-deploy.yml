@@ -31,7 +31,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Set up MySQL
-        uses: mysql-actions/setup-mysql@v1
+        uses: shogo82148/actions-setup-mysql@v1
         with:
           mysql-version: '8.0'
           root-password: ${{secrets.ROOT_DB_PASSWORD}}

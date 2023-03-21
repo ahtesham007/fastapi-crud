@@ -60,7 +60,7 @@ jobs:
         run: |
           python -c "import mysql.connector;
           conn=mysql.connector.connect(user='${{secrets.DATABASE_USERNAME}}', password='${{secrets.DATABASE_PASSWORD}}', host='localhost', database='${{secrets.DATABASE_NAME}}_test');
-          mycursor = conn.cursor(); mycursor.execute("SHOW TABLES");myresult = mycursor.fetchall();print(myresult)"
+          mycursor = conn.cursor(); mycursor.execute('SHOW TABLES');myresult = mycursor.fetchall();print(myresult)"
 
       - name: test with pytest
         run: |

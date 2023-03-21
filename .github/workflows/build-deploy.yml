@@ -7,7 +7,7 @@ jobs:
     environment:
       name: testing
     env:
-      HOST: ${{secrets.DATABASE_HOSTNAME}}
+      HOST: mysqldb
       PORT: ${{secrets.DATABASE_PORT}}
       PWD: ${{secrets.DATABASE_PASSWORD}}
       DB: ${{secrets.DATABASE_NAME}}
@@ -19,7 +19,7 @@ jobs:
 
     runs-on: ubuntu-latest
     services:
-      mysql:
+      mysqldb:
         image: mysql
         env:
           MYSQL_ROOT_PASSWORD: ${{secrets.ROOT_DB_PASSWORD}}
@@ -27,8 +27,6 @@ jobs:
           MYSQL_USER: ${{secrets.DATABASE_USERNAME}}
           MYSQL_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
           MYSQL_HOST: ${{secrets.DATABASE_HOSTNAME}}
-        ports:
-          - 3306:3306
         options: 
           --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
@@ -59,7 +57,7 @@ jobs:
       - name: Test connection to MySQL
         run: |
           python -c "import mysql.connector;
-          conn=mysql.connector.connect(user='${{secrets.DATABASE_USERNAME}}', password='${{secrets.DATABASE_PASSWORD}}', host='localhost', database='${{secrets.DATABASE_NAME}}_test');
+          conn=mysql.connector.connect(user='${{secrets.DATABASE_USERNAME}}', password='${{secrets.DATABASE_PASSWORD}}', host='mysqldb', database='${{secrets.DATABASE_NAME}}_test');
           mycursor = conn.cursor(); mycursor.execute('SHOW TABLES');myresult = mycursor.fetchall();print(myresult)"
 
       - name: test with pytest

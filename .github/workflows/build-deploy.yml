@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mysqldb:
-        image: mysql
+        image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: ${{secrets.ROOT_DB_PASSWORD}}
           MYSQL_DATABASE: ${{secrets.DATABASE_NAME}}_test
@@ -57,7 +57,7 @@ jobs:
       - name: Test connection to MySQL
         run: |
           python -c "import mysql.connector;
-          conn=mysql.connector.connect(user='${{secrets.DATABASE_USERNAME}}', password='${{secrets.DATABASE_PASSWORD}}', host='mysqldb', database='${{secrets.DATABASE_NAME}}_test');
+          conn=mysql.connector.connect(user='${{secrets.DATABASE_USERNAME}}', password='${{secrets.DATABASE_PASSWORD}}', host=mysqldb, database='${{secrets.DATABASE_NAME}}_test');
           mycursor = conn.cursor(); mycursor.execute('SHOW TABLES');myresult = mycursor.fetchall();print(myresult)"
 
       - name: test with pytest

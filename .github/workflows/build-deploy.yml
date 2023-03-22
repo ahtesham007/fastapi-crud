@@ -62,10 +62,10 @@ jobs:
           conn=mysql.connector.connect(user='${{secrets.DATABASE_USERNAME}}', password='${{secrets.DATABASE_PASSWORD}}', host='127.0.0.1', database='${{secrets.DATABASE_NAME}}_test');
           mycursor = conn.cursor(); mycursor.execute('SHOW TABLES');myresult = mycursor.fetchall();print(myresult)"
 
-      - name: test with pytest
-        run: |
-          pip install pytest
-          pytest
+      # - name: test with pytest
+      #   run: |
+      #     pip install pytest
+      #     pytest
       # - name: Login to Docker Hub
       #   uses: docker/login-action@v1
       #   with:

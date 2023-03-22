@@ -18,11 +18,6 @@ encoded_pwd = quote_plus(settings.pwd)
 host = settings.host
 port = settings.port
 db = settings.db
-print(user)
-print(encoded_pwd)
-print(host)
-print(db)
-print(port)
 
 SQLALCHEMY_DATABASE_URL = f'mysql+mysqlconnector://{user}:{encoded_pwd}@{host}:{port}/{db}_test'
 
